@@ -1,0 +1,21 @@
+{
+  "name": "nodemcu-backend",
+  "version": "1.0.0",
+  "description": "REST API (Express + MySQL) que guarda y consulta lecturas de sensores de un NodeMCU",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --env-file=.env index.js",
+    "dev": "nodemon --exec \"node --env-file=.env\" index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.22.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
