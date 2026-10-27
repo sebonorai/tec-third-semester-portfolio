@@ -1,0 +1,29 @@
+# Visual Studio / build output
+.vs/
+x64/
+Debug/
+Release/
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.ipch
+*.suo
+*.user
+*.tlog
+
+# Node
+node_modules/
+
+# Secrets and local config (never commit these)
+.env
+secrets.h
+
+# OS junk
+.DS_Store
+__MACOSX/
+Thumbs.db
+
+# Unfinished exercises: they stay local until they compile and work
+data-structures/_wip/
