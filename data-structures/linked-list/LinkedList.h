@@ -1,5 +1,6 @@
 // Implementa la clase para manejar listas simplemente encadenadas
 // Incluye las operaciones de la Act 2.1: reverse, shift y operator==
+// y las de la Act 2.2: constructor de copia, operator= y operator+=
 // Sebastian Noriega Olavarrieta
 // 06/10/2026
 
@@ -31,6 +32,9 @@ class LinkedList{
         void reverse(); // invierte el orden de la lista
         void shift(int n); // desplaza circularmente la lista n posiciones
         bool operator==(const LinkedList<T>& other) const; // compara dos listas
+        LinkedList(const LinkedList<T>& other); // constructor de copia
+        LinkedList<T>& operator=(const LinkedList<T>& other); // operador de asignación
+        void operator+=(const LinkedList<T>& other); // operador de concatenación
     private:
         Node<T> *head;
         int size;
@@ -421,4 +425,94 @@ bool LinkedList<T>::operator==(const LinkedList<T>& other) const {
     return true;
 }
 
+/*
+ * Constructor de copia
+ * Descripción: crea una lista que es un clon de otra.
+ * Entrada: la lista a copiar. Salida: nada.
+ * Precondición: la lista de entrada está instanciada, puede estar vacía.
+ * Postcondición: la nueva lista tiene los mismos datos en el mismo orden.
+ * Complejidad: O(n), recorre la lista de entrada y crea n nodos nuevos.
+ */
+
+template <class T>
+LinkedList<T>::LinkedList(const LinkedList<T>& other){
+    head = nullptr;
+    size = 0;
+    Node<T> *source = other.head;
+    Node<T> *last = nullptr;
+    while (source != nullptr) {
+    Node<T> *copy = new Node<T>(source->getData());
+    if (last == nullptr) {
+        head = copy;
+    } else {
+        last->setNext(copy);
+    }
+    last = copy;
+    size++;
+    source = source->getNext();
+    }
+}
+
+/*
+ * operator=
+ * Descripción: asigna una lista en la lista original, dejándola como clon.
+ * Entrada: la lista que se copia. Salida: la lista original (permite a = b = c).
+ * Precondición: ambas listas están instanciadas, pueden estar vacías.
+ * Postcondición: la lista original es un clon de la de entrada; sus datos
+ * anteriores se eliminan y no hay fuga de memoria.
+ * Complejidad: O(n + m), borra los n nodos anteriores y copia los m de la entrada.
+ */
+template <class T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other) {
+    if (this != &other) { // evita borrar la lista si se asigna a sí misma (a = a)
+        deleteAll(); // libera los nodos que ya tenía
+        Node<T> *source = other.head; // recorre la lista original
+        Node<T> *last = nullptr; // último nodo de la copia
+        while (source != nullptr) {
+            Node<T> *copy = new Node<T>(source->getData());
+            if (last == nullptr) {
+                head = copy;
+            } else {
+                last->setNext(copy);
+            }
+            last = copy;
+            size++;
+            source = source->getNext();
+        }
+    }
+    return *this;
+}
+
+/*
+ * operator+=
+ * Descripción: agrega al final de la lista original una copia de cada dato de
+ * la lista de entrada.
+ * Entrada: la lista cuyos datos se copian. Salida: nada.
+ * Precondición: ambas listas están instanciadas, pueden estar vacías.
+ * Postcondición: la lista original tiene sus datos seguidos de una copia de los
+ * datos de la entrada; la lista de entrada no cambia (salvo que sea la misma
+ * lista, en cuyo caso sus datos se duplican).
+ * Complejidad: O(n + m), recorre los n nodos propios para hallar el último y
+ * copia los m nodos de la entrada.
+ */
+template <class T>
+void LinkedList<T>::operator+=(const LinkedList<T>& other) {
+    int count = other.size; // se guarda antes de modificar size (por si other es *this)
+    Node<T> *last = head; // busca el último nodo propio
+    while (last != nullptr && last->getNext() != nullptr) {
+        last = last->getNext();
+    }
+    Node<T> *source = other.head;
+    for (int i = 0; i < count; i++) { // copia exactamente count datos
+        Node<T> *copy = new Node<T>(source->getData());
+        if (last == nullptr) {
+            head = copy; // la lista original estaba vacía
+        } else {
+            last->setNext(copy);
+        }
+        last = copy;
+        source = source->getNext();
+    }
+    size += count;
+}
 #endif // LINKEDLIST_H
